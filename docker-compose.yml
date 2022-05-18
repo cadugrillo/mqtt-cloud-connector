@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  mqtt-cloud-connector:
+    image: cadugrillo/mqtt-cloud-connector:1.0
+    ports:
+      - 1883
+      - 8883
+    volumes:
+      - type: bind
+        source: ./config
+        target: /config
+    networks:
+      - mosquitto_default
+
+networks:
+   mosquitto_default:
+    external: true
