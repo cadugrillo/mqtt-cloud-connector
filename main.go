@@ -1,7 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"mqtt-cloud-connector/config"
 	Mqttbuffer "mqtt-cloud-connector/mqttbuffer"
@@ -56,6 +59,34 @@ func (o *handler) handle(_ mqtt.Client, msg mqtt.Message) {
 	b = b.AddMessage(recmsg)
 }
 
+func NewTLSConfig(rootCAPath string, clientKeyPath string, privateKeyPath string, insecureSkipVerify bool) *tls.Config {
+
+	certpool := x509.NewCertPool()
+	pemCerts, err := ioutil.ReadFile(rootCAPath)
+	if err == nil {
+		certpool.AppendCertsFromPEM(pemCerts)
+	}
+
+	cert, err := tls.LoadX509KeyPair(clientKeyPath, privateKeyPath)
+	if err != nil {
+		panic(err)
+	}
+
+	cert.Leaf, err = x509.ParseCertificate(cert.Certificate[0])
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(cert.Leaf)
+
+	return &tls.Config{
+		RootCAs:            certpool,
+		ClientAuth:         tls.NoClientCert,
+		ClientCAs:          nil,
+		InsecureSkipVerify: insecureSkipVerify,
+		Certificates:       []tls.Certificate{cert},
+	}
+}
+
 func main() {
 
 	ConfigFile = config.ReadConfig()
@@ -78,7 +109,15 @@ func main() {
 
 	optsSub := mqtt.NewClientOptions()
 	optsSub.AddBroker(ConfigFile.ClientSub.ServerAddress)
-	optsSub.SetClientID(ConfigFile.ClientSub.ClientId)
+
+	switch ConfigFile.ClientSub.TlsConn {
+	case true:
+		tlsSub := NewTLSConfig(ConfigFile.ClientSub.RootCAPath, ConfigFile.ClientSub.ClientKeyPath, ConfigFile.ClientSub.PrivateKeyPath, ConfigFile.ClientSub.InsecureSkipVerify)
+		optsSub.SetClientID(ConfigFile.ClientSub.ClientId).SetTLSConfig(tlsSub)
+	case false:
+		optsSub.SetClientID(ConfigFile.ClientSub.ClientId)
+	}
+
 	optsSub.SetOrderMatters(ConfigFile.ClientSub.OrderMaters)                                      // Allow out of order messages (use this option unless in order delivery is essential)
 	optsSub.ConnectTimeout = (time.Duration(ConfigFile.ClientSub.ConnectionTimeout) * time.Second) // Minimal delays on connect
 	optsSub.WriteTimeout = (time.Duration(ConfigFile.ClientSub.WriteTimeout) * time.Second)        // Minimal delays on writes
@@ -116,7 +155,15 @@ func main() {
 	/////opts for Pub Broker
 	optsPub := mqtt.NewClientOptions()
 	optsPub.AddBroker(ConfigFile.ClientPub.ServerAddress)
-	optsPub.SetClientID(ConfigFile.ClientPub.ClientId)
+
+	switch ConfigFile.ClientPub.TlsConn {
+	case true:
+		tlsPub := NewTLSConfig(ConfigFile.ClientPub.RootCAPath, ConfigFile.ClientPub.ClientKeyPath, ConfigFile.ClientPub.PrivateKeyPath, ConfigFile.ClientPub.InsecureSkipVerify)
+		optsPub.SetClientID(ConfigFile.ClientPub.ClientId).SetTLSConfig(tlsPub)
+	case false:
+		optsSub.SetClientID(ConfigFile.ClientSub.ClientId)
+	}
+
 	optsPub.SetOrderMatters(ConfigFile.ClientPub.OrderMaters)                                      // Allow out of order messages (use this option unless in order delivery is essential)
 	optsPub.ConnectTimeout = (time.Duration(ConfigFile.ClientPub.ConnectionTimeout) * time.Second) // Minimal delays on connect
 	optsPub.WriteTimeout = (time.Duration(ConfigFile.ClientPub.WriteTimeout) * time.Second)        // Minimal delays on writes

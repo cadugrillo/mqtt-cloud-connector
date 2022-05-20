@@ -10,18 +10,28 @@ clientSub:
   connectRetry: true
   autoConnect: true
   orderMaters: false
+  tlsConn: false
+  rootCAPath: "./certs/sub/xxxxxxxx"
+  clientKeyPath: "./certs/sub/xxxxxxxx"
+  privateKeyPath: "./certs/sub/xxxxxxxx"
+  insecureSkipVerify: true
 
 clientPub:
   clientId: "cg_publisher"
-  serverAddress: "tcp://mosquitto:1883"
+  serverAddress: "tcps://a3lnu97tk1lj18-ats.iot.us-east-1.amazonaws.com:8883/mqtt"
   qos: 1
   connectionTimeout: 1
   writeTimeout: 1
-  keepAlive: 10
+  keepAlive: 30
   pingTimeout: 1
   connectRetry: true
   autoConnect: true
-  orderMaters: false  
+  orderMaters: false
+  tlsConn: true
+  rootCAPath: "./certs/pub/AmazonRootCA1.pem"
+  clientKeyPath: "./certs/pub/b4aa6501aafb00f805d710111d59ef07ee19e8affc6997a1a5c187b868b7aa0b-certificate.pem.crt"
+  privateKeyPath: "./certs/pub/b4aa6501aafb00f805d710111d59ef07ee19e8affc6997a1a5c187b868b7aa0b-private.pem.key"
+  insecureSkipVerify: true  
 
 #LOGS
 logs:

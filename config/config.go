@@ -8,28 +8,38 @@ import (
 
 type Config struct {
 	ClientSub struct {
-		ClientId          string `yaml:"clientId"`
-		ServerAddress     string `yaml:"serverAddress"`
-		Qos               int    `yaml:"qos"`
-		ConnectionTimeout int    `yaml:"connectionTimeout"`
-		WriteTimeout      int    `yaml:"writeTimeout"`
-		KeepAlive         int    `yaml:"keepAlive"`
-		PingTimeout       int    `yaml:"pingTimeout"`
-		ConnectRetry      bool   `yaml:"connectRetry"`
-		AutoConnect       bool   `yaml:"autoConnect"`
-		OrderMaters       bool   `yaml:"orderMaters"`
+		ClientId           string `yaml:"clientId"`
+		ServerAddress      string `yaml:"serverAddress"`
+		Qos                int    `yaml:"qos"`
+		ConnectionTimeout  int    `yaml:"connectionTimeout"`
+		WriteTimeout       int    `yaml:"writeTimeout"`
+		KeepAlive          int    `yaml:"keepAlive"`
+		PingTimeout        int    `yaml:"pingTimeout"`
+		ConnectRetry       bool   `yaml:"connectRetry"`
+		AutoConnect        bool   `yaml:"autoConnect"`
+		OrderMaters        bool   `yaml:"orderMaters"`
+		TlsConn            bool   `yaml:"tlsConn"`
+		RootCAPath         string `yaml:"rootCAPath"`
+		ClientKeyPath      string `yaml:"clientKeyPath"`
+		PrivateKeyPath     string `yaml:"privateKeyPath"`
+		InsecureSkipVerify bool   `yaml:"insecureSkipVerify"`
 	} `yaml:"clientSub"`
 	ClientPub struct {
-		ClientId          string `yaml:"clientId"`
-		ServerAddress     string `yaml:"serverAddress"`
-		Qos               int    `yaml:"qos"`
-		ConnectionTimeout int    `yaml:"connectionTimeout"`
-		WriteTimeout      int    `yaml:"writeTimeout"`
-		KeepAlive         int    `yaml:"keepAlive"`
-		PingTimeout       int    `yaml:"pingTimeout"`
-		ConnectRetry      bool   `yaml:"connectRetry"`
-		AutoConnect       bool   `yaml:"autoConnect"`
-		OrderMaters       bool   `yaml:"orderMaters"`
+		ClientId           string `yaml:"clientId"`
+		ServerAddress      string `yaml:"serverAddress"`
+		Qos                int    `yaml:"qos"`
+		ConnectionTimeout  int    `yaml:"connectionTimeout"`
+		WriteTimeout       int    `yaml:"writeTimeout"`
+		KeepAlive          int    `yaml:"keepAlive"`
+		PingTimeout        int    `yaml:"pingTimeout"`
+		ConnectRetry       bool   `yaml:"connectRetry"`
+		AutoConnect        bool   `yaml:"autoConnect"`
+		OrderMaters        bool   `yaml:"orderMaters"`
+		TlsConn            bool   `yaml:"tlsConn"`
+		RootCAPath         string `yaml:"rootCAPath"`
+		ClientKeyPath      string `yaml:"clientKeyPath"`
+		PrivateKeyPath     string `yaml:"privateKeyPath"`
+		InsecureSkipVerify bool   `yaml:"insecureSkipVerify"`
 	} `yaml:"clientPub"`
 	Logs struct {
 		SubPayload bool `yaml:"subPayload"`
