@@ -36,7 +36,12 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
-/certs
+
+#certs
+*.pem
+*.crt
+*.key
+
 
 # System files
 .DS_Store
