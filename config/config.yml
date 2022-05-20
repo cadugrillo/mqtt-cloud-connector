@@ -44,14 +44,14 @@ logs:
 #TOPICS TO SUBSCRIBE TO
 topicsSub:
   topic:
-    - "/cg-connector/sample/1"
-    - "/cg-connector/sample/2"
-    - "/cg-connector/sample/3"
+    - "cg-connector/sample/1"
+    - "cg-connector/sample/2"
+    - "cg-connector/sample/3"
 
 
 #TOPICS TO PUBLISH TO
 topicsPub:
   topic:
-    - "/cg-connector/sample/11"
-    - "/cg-connector/sample/12"
-    - "/cg-connector/sample/13"
+    - "cg-connector/sample/11"
+    - "cg-connector/sample/12"
+    - "cg-connector/sample/13"

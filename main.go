@@ -56,7 +56,7 @@ func (o *handler) handle(_ mqtt.Client, msg mqtt.Message) {
 		}
 	}
 
-	b = b.AddMessage(recmsg)
+	b.Buffer, b.WritePointer = b.AddMessage(recmsg)
 }
 
 func NewTLSConfig(rootCAPath string, clientKeyPath string, privateKeyPath string, insecureSkipVerify bool) *tls.Config {
@@ -214,9 +214,10 @@ func main() {
 				}
 
 				clientPub.Publish(msg.Topic, msg.Qos, msg.Retained, msg.Payload)
-				b = b.NextMessage()
-			}
+				b.ReadPointer = b.NextMessage()
 
+			}
+			time.Sleep(250 * time.Millisecond)
 		}
 	}()
 
