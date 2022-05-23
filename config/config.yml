@@ -1,7 +1,7 @@
 #MQTT CLIENT CONFIGURATIONS
 clientSub:
   clientId: "cg_subscriber"
-  serverAddress: "tcp://test.mosquitto.org:1883"
+  serverAddress: "tcp://test.mosquitto.org:1884"
   qos: 1
   connectionTimeout: 1
   writeTimeout: 1
@@ -10,6 +10,8 @@ clientSub:
   connectRetry: true
   autoConnect: true
   orderMaters: false
+  userName: "rw"
+  password: "readwrite"
   tlsConn: false
   rootCAPath: "./certs/sub/xxxxxxxx"
   clientKeyPath: "./certs/sub/xxxxxxxx"
@@ -27,6 +29,8 @@ clientPub:
   connectRetry: true
   autoConnect: true
   orderMaters: false
+  userName: ""
+  password: ""
   tlsConn: true
   rootCAPath: "./certs/pub/AmazonRootCA1.pem"
   clientKeyPath: "./certs/pub/b4aa6501aafb00f805d710111d59ef07ee19e8affc6997a1a5c187b868b7aa0b-certificate.pem.crt"

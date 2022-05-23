@@ -18,6 +18,8 @@ type Config struct {
 		ConnectRetry       bool   `yaml:"connectRetry"`
 		AutoConnect        bool   `yaml:"autoConnect"`
 		OrderMaters        bool   `yaml:"orderMaters"`
+		UserName           string `yaml:"userName"`
+		Password           string `yaml:"password"`
 		TlsConn            bool   `yaml:"tlsConn"`
 		RootCAPath         string `yaml:"rootCAPath"`
 		ClientKeyPath      string `yaml:"clientKeyPath"`
@@ -35,6 +37,8 @@ type Config struct {
 		ConnectRetry       bool   `yaml:"connectRetry"`
 		AutoConnect        bool   `yaml:"autoConnect"`
 		OrderMaters        bool   `yaml:"orderMaters"`
+		UserName           string `yaml:"userName"`
+		Password           string `yaml:"password"`
 		TlsConn            bool   `yaml:"tlsConn"`
 		RootCAPath         string `yaml:"rootCAPath"`
 		ClientKeyPath      string `yaml:"clientKeyPath"`

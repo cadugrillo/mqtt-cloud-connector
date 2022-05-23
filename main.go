@@ -76,7 +76,7 @@ func NewTLSConfig(rootCAPath string, clientKeyPath string, privateKeyPath string
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(cert.Leaf)
+	//fmt.Println(cert.Leaf)
 
 	return &tls.Config{
 		RootCAs:            certpool,
@@ -116,6 +116,8 @@ func main() {
 		optsSub.SetClientID(ConfigFile.ClientSub.ClientId).SetTLSConfig(tlsSub)
 	case false:
 		optsSub.SetClientID(ConfigFile.ClientSub.ClientId)
+		optsSub.SetUsername(ConfigFile.ClientSub.UserName)
+		optsSub.SetPassword(ConfigFile.ClientSub.Password)
 	}
 
 	optsSub.SetOrderMatters(ConfigFile.ClientSub.OrderMaters)                                      // Allow out of order messages (use this option unless in order delivery is essential)
@@ -161,7 +163,9 @@ func main() {
 		tlsPub := NewTLSConfig(ConfigFile.ClientPub.RootCAPath, ConfigFile.ClientPub.ClientKeyPath, ConfigFile.ClientPub.PrivateKeyPath, ConfigFile.ClientPub.InsecureSkipVerify)
 		optsPub.SetClientID(ConfigFile.ClientPub.ClientId).SetTLSConfig(tlsPub)
 	case false:
-		optsSub.SetClientID(ConfigFile.ClientSub.ClientId)
+		optsPub.SetClientID(ConfigFile.ClientPub.ClientId)
+		optsPub.SetUsername(ConfigFile.ClientPub.UserName)
+		optsPub.SetPassword(ConfigFile.ClientPub.Password)
 	}
 
 	optsPub.SetOrderMatters(ConfigFile.ClientPub.OrderMaters)                                      // Allow out of order messages (use this option unless in order delivery is essential)
