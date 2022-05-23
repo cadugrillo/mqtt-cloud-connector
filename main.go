@@ -211,13 +211,14 @@ func main() {
 				}
 				if ConfigFile.Logs.SubPayload {
 					fmt.Println(msg.Payload)
+					fmt.Println(b.GetWritePointer())
+					fmt.Println(b.GetReadPointer())
 				}
 
 				clientPub.Publish(msg.Topic, msg.Qos, msg.Retained, msg.Payload)
 				b.ReadPointer = b.NextMessage()
 
 			}
-			time.Sleep(250 * time.Millisecond)
 		}
 	}()
 
