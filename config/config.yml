@@ -35,7 +35,9 @@ clientPub:
   rootCAPath: "./certs/pub/AmazonRootCA1.pem"
   clientKeyPath: "./certs/pub/b4aa6501aafb00f805d710111d59ef07ee19e8affc6997a1a5c187b868b7aa0b-certificate.pem.crt"
   privateKeyPath: "./certs/pub/b4aa6501aafb00f805d710111d59ef07ee19e8affc6997a1a5c187b868b7aa0b-private.pem.key"
-  insecureSkipVerify: true  
+  insecureSkipVerify: true
+  translateTopic: false
+  publishInterval: 500  
 
 #LOGS
 logs:

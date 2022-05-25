@@ -44,6 +44,8 @@ type Config struct {
 		ClientKeyPath      string `yaml:"clientKeyPath"`
 		PrivateKeyPath     string `yaml:"privateKeyPath"`
 		InsecureSkipVerify bool   `yaml:"insecureSkipVerify"`
+		TranslateTopic     bool   `yaml:"translateTopic"`
+		PublishInterval    int    `yaml:"publishInterval"`
 	} `yaml:"clientPub"`
 	Logs struct {
 		SubPayload bool `yaml:"subPayload"`

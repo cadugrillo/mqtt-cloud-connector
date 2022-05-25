@@ -6,7 +6,7 @@ import (
 )
 
 type Mqttbuffer struct {
-	Buffer       [1000]Message
+	Buffer       [5000]Message
 	ReadPointer  int
 	WritePointer int
 }
@@ -35,7 +35,7 @@ func (b Mqttbuffer) GetWritePointer() int {
 	return b.WritePointer
 }
 
-func (b Mqttbuffer) AddMessage(message Message) ([1000]Message, int) {
+func (b Mqttbuffer) AddMessage(message Message) ([5000]Message, int) {
 	if b.WritePointer == len(b.Buffer)-1 {
 		b.Buffer[b.WritePointer] = message
 		b.WritePointer = 0

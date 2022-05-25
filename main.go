@@ -21,6 +21,8 @@ var (
 	once       sync.Once
 	ConfigFile config.Config
 	b          Mqttbuffer.Mqttbuffer
+	PubConnOk  bool
+	SubConnOk  bool
 )
 
 func init() {
@@ -29,6 +31,8 @@ func init() {
 
 func initialise() {
 	b = Mqttbuffer.NewMqttbuffer()
+	PubConnOk = false
+	SubConnOk = false
 }
 
 type handler struct {
@@ -47,14 +51,8 @@ func (o *handler) handle(_ mqtt.Client, msg mqtt.Message) {
 	recmsg.Qos = msg.Qos()
 	recmsg.Retained = msg.Retained()
 	recmsg.MessageID = msg.MessageID()
+	recmsg.Topic = msg.Topic()
 	recmsg.Payload = string(msg.Payload())
-
-	for i := 0; i < len(ConfigFile.TopicsSub.Topic); i++ {
-		if ConfigFile.TopicsSub.Topic[i] == msg.Topic() {
-			recmsg.Topic = ConfigFile.TopicsPub.Topic[i]
-			break
-		}
-	}
 
 	b.Buffer, b.WritePointer = b.AddMessage(recmsg)
 }
@@ -176,8 +174,17 @@ func main() {
 	optsPub.ConnectRetry = ConfigFile.ClientPub.ConnectRetry                                       // Automate connection management (will keep trying to connect and will reconnect if network drops)
 	optsPub.AutoReconnect = ConfigFile.ClientPub.AutoConnect
 	optsPub.DefaultPublishHandler = func(_ mqtt.Client, msg mqtt.Message) { fmt.Printf("PUB BROKER - UNEXPECTED : %s\n", msg) }
-	optsPub.OnConnectionLost = func(cl mqtt.Client, err error) { fmt.Println("PUB BROKER - CONNECTION LOST") } // Log events
-	optsPub.OnConnect = func(c mqtt.Client) { fmt.Println("PUB BROKER - CONNECTION STABLISHED") }
+
+	optsPub.OnConnectionLost = func(cl mqtt.Client, err error) {
+		fmt.Println("PUB BROKER - CONNECTION LOST")
+		PubConnOk = false
+	}
+
+	optsPub.OnConnect = func(c mqtt.Client) {
+		fmt.Println("PUB BROKER - CONNECTION STABLISHED")
+		PubConnOk = true
+	}
+
 	optsPub.OnReconnecting = func(mqtt.Client, *mqtt.ClientOptions) { fmt.Println("PUB BROKER - ATTEMPTING TO RECONNECT") }
 
 	//
@@ -208,7 +215,7 @@ func main() {
 
 	go func() {
 		for {
-			if b.NewMessage() {
+			if b.NewMessage() && PubConnOk {
 				msg, err := b.ReadMessage(b.GetReadPointer())
 				if err != nil {
 					panic(err.Error())
@@ -218,10 +225,20 @@ func main() {
 					fmt.Println(b.GetWritePointer())
 					fmt.Println(b.GetReadPointer())
 				}
-
-				clientPub.Publish(msg.Topic, msg.Qos, msg.Retained, msg.Payload)
+				switch ConfigFile.ClientPub.TranslateTopic {
+				case false:
+					clientPub.Publish(msg.Topic, msg.Qos, msg.Retained, msg.Payload)
+				case true:
+					for i := 0; i < len(ConfigFile.TopicsSub.Topic); i++ {
+						if ConfigFile.TopicsSub.Topic[i] == msg.Topic {
+							TranslatedTopic := ConfigFile.TopicsPub.Topic[i]
+							clientPub.Publish(TranslatedTopic, msg.Qos, msg.Retained, msg.Payload)
+							break
+						}
+					}
+				}
 				b.ReadPointer = b.NextMessage()
-
+				time.Sleep(time.Duration(ConfigFile.ClientPub.PublishInterval) * time.Millisecond)
 			}
 		}
 	}()
