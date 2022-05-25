@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM golang:1.16-alpine AS builder
+ENV CGO_ENABLED 0
 
 WORKDIR /usr/local/go/src/mqtt-cloud-connector
 
@@ -16,7 +17,8 @@ COPY ./certs/ /usr/local/go/src/mqtt-cloud-connector/certs
 
 RUN ls -laR ./
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=mod go build -ldflags="-w -s" -o /App
+#RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=mod go build -ldflags="-w -s" -o /App
+RUN go build -gcflags "all=-N -l" -o /App
 
 #Step 2 - Build a small image
 

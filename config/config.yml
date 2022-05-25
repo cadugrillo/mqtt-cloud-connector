@@ -5,7 +5,7 @@ clientSub:
   qos: 1
   connectionTimeout: 1
   writeTimeout: 1
-  keepAlive: 10
+  keepAlive: 30
   pingTimeout: 1
   connectRetry: true
   autoConnect: true
