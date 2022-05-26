@@ -8,3 +8,6 @@ docker exec -it mysql bash -l
 ///////////CURL/////////////////
 curl localhost:3000/todo
 curl localhost:3000/todo -d '{"message": "finish writing the article"}'
+
+//////BUILD MULTI ARCH DOCKER IMAGES////////////
+docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --push --tag cadugrillo/mqtt-cloud-connector:1.x .
