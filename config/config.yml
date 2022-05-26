@@ -1,7 +1,7 @@
 #MQTT CLIENT CONFIGURATIONS
 clientSub:
   clientId: "cg_subscriber"
-  serverAddress: "tcp://test.mosquitto.org:1884"
+  serverAddress: "tcp://test.mosquitto.org:1883"
   qos: 1
   connectionTimeout: 1
   writeTimeout: 1
@@ -21,7 +21,7 @@ clientSub:
 clientPub:
   clientId: "cg_publisher"
   serverAddress: "tcps://a3lnu97tk1lj18-ats.iot.us-east-1.amazonaws.com:8883/mqtt"
-  qos: 1
+  qos: 0
   connectionTimeout: 1
   writeTimeout: 1
   keepAlive: 30
@@ -36,8 +36,8 @@ clientPub:
   clientKeyPath: "./certs/pub/b4aa6501aafb00f805d710111d59ef07ee19e8affc6997a1a5c187b868b7aa0b-certificate.pem.crt"
   privateKeyPath: "./certs/pub/b4aa6501aafb00f805d710111d59ef07ee19e8affc6997a1a5c187b868b7aa0b-private.pem.key"
   insecureSkipVerify: true
-  translateTopic: true
-  publishInterval: 500  
+  translateTopic: false
+  publishInterval: 250
 
 #LOGS
 logs:
@@ -50,10 +50,7 @@ logs:
 #TOPICS TO SUBSCRIBE TO
 topicsSub:
   topic:
-    - "cg-connector/sample/1"
-    - "cg-connector/sample/2"
-    - "cg-connector/sample/3"
-
+    - "cg-connector/sample/#"
 
 #TOPICS TO PUBLISH TO
 topicsPub:
