@@ -238,8 +238,8 @@ func main() {
 					}
 				}
 				b.ReadPointer = b.NextMessage()
-				time.Sleep(time.Duration(ConfigFile.ClientPub.PublishInterval) * time.Millisecond)
 			}
+			time.Sleep(time.Duration(ConfigFile.ClientPub.PublishInterval) * time.Millisecond)
 		}
 	}()
 
