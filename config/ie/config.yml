@@ -1,0 +1,60 @@
+#MQTT CLIENT CONFIGURATIONS
+clientSub:
+  clientId: "cg_subscriber"
+  serverAddress: "tcp://ie-databus:1883"
+  qos: 1
+  connectionTimeout: 1
+  writeTimeout: 1
+  keepAlive: 30
+  pingTimeout: 1
+  connectRetry: true
+  autoConnect: true
+  orderMaters: false
+  userName: "cgcloud"
+  password: "cgcloud"
+  tlsConn: false
+  rootCAPath: "./certs/SubRootCA.txt"
+  clientKeyPath: "./certs/SubDeviceCertificate.txt"
+  privateKeyPath: "./certs/SubPrivateKey.txt"
+  insecureSkipVerify: true
+
+clientPub:
+  clientId: "cg_publisher"
+  serverAddress: "tcps://a3lnu97tk1lj18-ats.iot.us-east-1.amazonaws.com:8883/mqtt"
+  qos: 1
+  connectionTimeout: 1
+  writeTimeout: 1
+  keepAlive: 30
+  pingTimeout: 1
+  connectRetry: true
+  autoConnect: true
+  orderMaters: false
+  userName: ""
+  password: ""
+  tlsConn: true
+  rootCAPath: "./certs/PubRootCA.txt"
+  clientKeyPath: "./certs/PubDeviceCertificate.txt"
+  privateKeyPath: "./certs/PubPrivateKey.txt"
+  insecureSkipVerify: true
+  translateTopic: false
+  publishInterval: 250
+
+#LOGS
+logs:
+  subPayload: true
+  debug: false
+  warning: false
+  error: false
+  critical: false
+
+#TOPICS TO SUBSCRIBE TO
+topicsSub:
+  topic:
+    - "cg-connector/sample/#"
+
+#TOPICS TO PUBLISH TO
+topicsPub:
+  topic:
+    - "cg-connector/sample/11"
+    - "cg-connector/sample/12"
+    - "cg-connector/sample/13"

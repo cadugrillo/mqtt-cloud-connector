@@ -1,0 +1,25 @@
+version: '2.4'
+services:
+  cg-cloud-gateway:
+    restart: always
+    image: 'cadugrillo/mqtt-cloud-connector:1.4'
+    hostname: cg-cloud-gateway
+    networks:
+      - proxy-redirect
+    logging:
+      driver: json-file
+    volumes:
+      - './publish/:/publish/'
+      - './cfg-data/:/cfg-data/'
+      - 'cg-config:/config'
+      - 'cg-certs:/certs'
+    mem_limit: 800mb
+    cpuset: '0'
+networks:
+  proxy-redirect:
+    external:
+      name: proxy-redirect
+    driver: bridge
+volumes:
+  cg-certs: null
+  cg-config: null

@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   mqtt-cloud-connector:
-    image: cadugrillo/mqtt-cloud-connector:1.2
+    image: cadugrillo/mqtt-cloud-connector:1.4
     container_name: mqtt-cloud-connector
     restart: always
     volumes:
