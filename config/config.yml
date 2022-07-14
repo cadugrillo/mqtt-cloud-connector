@@ -1,7 +1,7 @@
 #MQTT CLIENT CONFIGURATIONS
 clientSub:
   clientId: "cg_subscriber"
-  serverAddress: "tcp://test.mosquitto.org:1883"
+  serverAddress: "tcp://test.mosquitto.org:1884"
   qos: 1
   connectionTimeout: 1
   writeTimeout: 1
@@ -21,7 +21,7 @@ clientSub:
 clientPub:
   clientId: "cg_publisher"
   serverAddress: "tcps://a3lnu97tk1lj18-ats.iot.us-east-1.amazonaws.com:8883/mqtt"
-  qos: 0
+  qos: 1
   connectionTimeout: 1
   writeTimeout: 1
   keepAlive: 30
@@ -43,9 +43,9 @@ clientPub:
 logs:
   subPayload: true
   debug: false
-  warning: false
-  error: false
-  critical: false
+  warning: true
+  error: true
+  critical: true
 
 #TOPICS TO SUBSCRIBE TO
 topicsSub:

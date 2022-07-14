@@ -6,7 +6,7 @@ import (
 )
 
 type Mqttbuffer struct {
-	Buffer       [5000]Message
+	Buffer       [432000]Message
 	ReadPointer  int
 	WritePointer int
 }
@@ -35,7 +35,7 @@ func (b Mqttbuffer) GetWritePointer() int {
 	return b.WritePointer
 }
 
-func (b Mqttbuffer) AddMessage(message Message) ([5000]Message, int) {
+func (b Mqttbuffer) AddMessage(message Message) ([432000]Message, int) {
 	if b.WritePointer == len(b.Buffer)-1 {
 		b.Buffer[b.WritePointer] = message
 		b.WritePointer = 0
@@ -54,17 +54,19 @@ func (b Mqttbuffer) ReadMessage(index int) (Message, error) {
 	return msg, errors.New(fmt.Sprintf("Index %d greater then buffer size [%d]", index, len(b.Buffer)))
 }
 
-func (b Mqttbuffer) NextMessage() int {
+func (b Mqttbuffer) NextMessage() {
 	if b.ReadPointer == len(b.Buffer)-1 {
 		b.ReadPointer = 0
-		return b.ReadPointer
+		//return b.ReadPointer
+		return
 	}
 	if b.ReadPointer != b.WritePointer {
 		b.ReadPointer++
-		return b.ReadPointer
+		//return b.ReadPointer
+		return
 	}
 	fmt.Println("No new messages on the buffer")
-	return b.ReadPointer
+	//return b.ReadPointer
 }
 
 func (b Mqttbuffer) NewMessage() bool {

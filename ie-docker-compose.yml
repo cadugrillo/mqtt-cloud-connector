@@ -13,7 +13,7 @@ services:
       - './cfg-data/:/cfg-data/'
       - 'cg-config:/config'
       - 'cg-certs:/certs'
-    mem_limit: 800mb
+    mem_limit: 100mb
     cpuset: '0'
 networks:
   proxy-redirect:

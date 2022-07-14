@@ -3,11 +3,13 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"mqtt-cloud-connector/config"
-	Mqttbuffer "mqtt-cloud-connector/mqttbuffer"
+
+	//Mqttbuffer "mqtt-cloud-connector/mqttbuffer"
 	"os"
 	"os/signal"
 	"sync"
@@ -20,7 +22,7 @@ import (
 var (
 	once       sync.Once
 	ConfigFile config.Config
-	b          Mqttbuffer.Mqttbuffer
+	b          Mqttbuffer
 	PubConnOk  bool
 	SubConnOk  bool
 )
@@ -30,7 +32,7 @@ func init() {
 }
 
 func initialise() {
-	b = Mqttbuffer.NewMqttbuffer()
+	b = NewMqttbuffer()
 	PubConnOk = false
 	SubConnOk = false
 }
@@ -46,7 +48,7 @@ func NewHandler() *handler {
 
 func (o *handler) handle(_ mqtt.Client, msg mqtt.Message) {
 
-	var recmsg Mqttbuffer.Message
+	var recmsg Message
 	recmsg.Duplicate = msg.Duplicate()
 	recmsg.Qos = msg.Qos()
 	recmsg.Retained = msg.Retained()
@@ -54,7 +56,7 @@ func (o *handler) handle(_ mqtt.Client, msg mqtt.Message) {
 	recmsg.Topic = msg.Topic()
 	recmsg.Payload = string(msg.Payload())
 
-	b.Buffer, b.WritePointer = b.AddMessage(recmsg)
+	AddMessage(recmsg)
 }
 
 func NewTLSConfig(rootCAPath string, clientKeyPath string, privateKeyPath string, insecureSkipVerify bool) *tls.Config {
@@ -83,6 +85,74 @@ func NewTLSConfig(rootCAPath string, clientKeyPath string, privateKeyPath string
 		InsecureSkipVerify: insecureSkipVerify,
 		Certificates:       []tls.Certificate{cert},
 	}
+}
+
+type Mqttbuffer struct {
+	Buffer       [1296000]Message
+	ReadPointer  int
+	WritePointer int
+}
+
+// Message
+type Message struct {
+	Duplicate bool
+	Qos       byte
+	Retained  bool
+	Topic     string
+	MessageID uint16
+	Payload   string
+	Ack       bool
+}
+
+func NewMqttbuffer() Mqttbuffer {
+	b := Mqttbuffer{}
+	return b
+}
+
+func GetReadPointer() int {
+	return b.ReadPointer
+}
+
+func GetWritePointer() int {
+	return b.WritePointer
+}
+
+func AddMessage(message Message) {
+	if b.WritePointer == len(b.Buffer)-1 {
+		b.Buffer[b.WritePointer] = message
+		b.WritePointer = 0
+		return
+	}
+	b.Buffer[b.WritePointer] = message
+	b.WritePointer++
+	return
+}
+
+func ReadMessage(index int) (Message, error) {
+	if index < len(b.Buffer) {
+		return b.Buffer[index], nil
+	}
+	msg := Message{}
+	return msg, errors.New(fmt.Sprintf("Index %d greater then buffer size [%d]", index, len(b.Buffer)))
+}
+
+func NextMessage() {
+	if b.ReadPointer == len(b.Buffer)-1 {
+		b.ReadPointer = 0
+		//return b.ReadPointer
+		return
+	}
+	if b.ReadPointer != b.WritePointer {
+		b.ReadPointer++
+		//return b.ReadPointer
+		return
+	}
+	fmt.Println("No new messages on the buffer")
+	//return b.ReadPointer
+}
+
+func (b Mqttbuffer) NewMessage() bool {
+	return b.WritePointer != b.ReadPointer
 }
 
 func main() {
@@ -216,14 +286,14 @@ func main() {
 	go func() {
 		for {
 			if b.NewMessage() && PubConnOk {
-				msg, err := b.ReadMessage(b.GetReadPointer())
+				msg, err := ReadMessage(GetReadPointer())
 				if err != nil {
 					panic(err.Error())
 				}
 				if ConfigFile.Logs.SubPayload {
 					fmt.Println(msg.Payload)
-					fmt.Println(b.GetWritePointer())
-					fmt.Println(b.GetReadPointer())
+					fmt.Println(GetWritePointer())
+					fmt.Println(GetReadPointer())
 				}
 				switch ConfigFile.ClientPub.TranslateTopic {
 				case false:
@@ -237,7 +307,8 @@ func main() {
 						}
 					}
 				}
-				b.ReadPointer = b.NextMessage()
+				NextMessage()
+				//b.ReadPointer = b.NextMessage()
 			}
 			time.Sleep(time.Duration(ConfigFile.ClientPub.PublishInterval) * time.Millisecond)
 		}
